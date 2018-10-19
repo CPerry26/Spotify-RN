@@ -15,16 +15,19 @@ class SpotifyRN
 
 	# These are the client app authorization keys required to make calls to
 	# the Spotify API.
-	CLIENT_ID = "5c8595d229b84961b9f6038526e35323"
-	CLIENT_SECRET = "34ad767420d64b6ba1440553ed8285f0"
+	CLIENT_ID = "YOUR_CLIENT_ID"
+	CLIENT_SECRET = "YOUR_CLIENT_SECRET"
 
 	# These are the keys for the Twilio API.
-	APP_SID = "AC13465bd382ed5fe5d08299a7f2fa592c"
-	APP_AUTH = "bdb8bb7902dca17b98f001685a9f5445"
+	APP_SID = "TWILIO_SID"
+	APP_AUTH = "TWILIO_AUTH"
 
 	# A list of phone numbers to send notifications to.
-	PHONE_NUMBERS = ["+14012567204"]
-	TWILIO_NUMBER = "+17743077136"
+	# They need to be in the following format:
+	# [+country code][area code][phone number]
+	# i.e. "+12225557777"
+	PHONE_NUMBERS = ["YOUR_PHONE_NUMBERS"]
+	TWILIO_NUMBER = "YOUR_TWILIO_NUMBER"
 
 	def initialize
 		RSpotify.authenticate(CLIENT_ID, CLIENT_SECRET)
@@ -38,7 +41,7 @@ class SpotifyRN
 	# Returns:
 	# 	=> A list of RSpotify albums (the newest 50 releases in the US).
 	def get_new_releases
-		return RSpotify::Album.new_releases(country: 'US', limit: 20)
+		return RSpotify::Album.new_releases(country: 'US', limit: 50)
 	end
 
 	# This method filters the full results for the releases in the desired
@@ -113,9 +116,10 @@ class SpotifyRN
 			end
 		}
 
-		albums << "None\n" if albums.length < 8
-		singles << "None\n" if singles.length < 9
-		compilations << "None\n" if compilations.length < 14
+		# Add "None" if no results were found for that category.
+		albums << "None\n" if albums.length <= 8
+		singles << "None\n" if singles.length <= 9
+		compilations << "None\n" if compilations.length <= 14
 
 		return albums + "\n" + singles + "\n" + compilations
 	end
@@ -147,16 +151,12 @@ class SpotifyRN
 	end
 end
 
-instance = SpotifyRN.new
+spotifyRN = SpotifyRN.new
 
-testing = instance.get_new_releases
+newReleases = spotifyRN.get_new_releases
 
-#testing = instance.filter_releases(testing)
+#filteredResults = spotifyRN.filter_releases(newReleases)
 
-#print(testing)
+textBody = spotifyRN.build_text_string(testing)
 
-testText = instance.build_text_string(testing)
-
-print(testText)
-
-instance.send_text_message(testText)
+spotifyRN.send_text_message(testText)
