@@ -159,4 +159,4 @@ newReleases = spotifyRN.get_new_releases
 
 textBody = spotifyRN.build_text_string(testing)
 
-spotifyRN.send_text_message(testText)
+spotifyRN.send_text_message(textBody)
