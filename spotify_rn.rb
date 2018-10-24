@@ -58,9 +58,7 @@ class SpotifyRN
 
 		releases.each { |release| 
 			release.genres.each { |genre|
-				if GENRES.include? genre and 
-					release.release_date.eql? Time.now.strftime("%Y-%m-%d")
-					
+				if release.release_date.eql? Time.now.strftime("%Y-%m-%d")
 					filteredResults << release
 				end
 			}
@@ -155,8 +153,8 @@ spotifyRN = SpotifyRN.new
 
 newReleases = spotifyRN.get_new_releases
 
-#filteredResults = spotifyRN.filter_releases(newReleases)
+filteredResults = spotifyRN.filter_releases(newReleases)
 
-textBody = spotifyRN.build_text_string(testing)
+textBody = spotifyRN.build_text_string(filteredResults)
 
 spotifyRN.send_text_message(textBody)
